@@ -4,8 +4,8 @@
 架空施設・ダミーデータによるポートフォリオ作品。デザインから実装・運用設計まで一人で担当。
 
 🔗 **Live demo**
-- 予約フォーム：`/`（index.html）
-- 管理画面：`/admin.html`
+- 予約フォーム：https://aone-glamping-demo.vercel.app/
+- 管理画面：https://aone-glamping-demo.vercel.app/admin.html
 
 ## 特徴
 

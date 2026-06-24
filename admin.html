@@ -108,6 +108,19 @@
   .acard.free{border-left:4px solid #3f8f64}.acard.free .st{color:#2f4a37}
   .acard.full{border-left:4px solid var(--ember)}.acard.full .st{color:var(--ember)}
   .acard .meta{font-size:11.5px;color:var(--sage);margin-top:3px}
+  /* 空室カレンダー（棟×日付マトリクス） */
+  .invcal-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card)}
+  table.invcal{border-collapse:collapse;font-size:12px;width:100%}
+  .invcal th,.invcal td{border:1px solid #e6e3d8;text-align:center}
+  .invcal thead th{font-family:var(--mono);font-size:10px;color:var(--sage);font-weight:700;padding:7px 0;min-width:30px;background:var(--card)}
+  .invcal th.wend{color:#b5563f}.invcal th.sun{color:#b5563f}
+  .invcal th.corner,.invcal td.villa{position:sticky;left:0;background:var(--card);text-align:left;padding:9px 14px;font-family:var(--body);font-weight:700;white-space:nowrap;border-right:1px solid var(--line);z-index:1}
+  .invcal th.corner{z-index:2}
+  .invcal td.villa span{font-weight:400;color:var(--sage);font-size:10px}
+  .invcal td.cell2{font-family:var(--mono);height:36px;min-width:30px}
+  .invcal td.free{background:#e3ece2;color:#2f4a37}
+  .invcal td.full{background:#f4ddd0;color:#a84e23;font-weight:700}
+  .invcal td.today2{box-shadow:inset 0 0 0 2px var(--ember)}
 
   /* settings */
   .set-facility{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
@@ -199,17 +212,16 @@
       </div>
     </section>
 
-    <!-- ===== 空室確認 ===== -->
+    <!-- ===== 空室確認（カレンダー） ===== -->
     <section id="sec-inv" hidden>
       <div class="panel">
-        <h3>空室を確認する</h3>
-        <div class="inv-form">
-          <div class="fld"><label for="inv-ci">チェックイン</label><input type="date" id="inv-ci"></div>
-          <div class="fld"><label for="inv-nights">泊数</label><select id="inv-nights"><option value="1">1泊</option><option value="2">2泊</option><option value="3">3泊</option></select></div>
-          <button class="btn primary" id="inv-check">空室を確認</button>
+        <div class="cal-bar">
+          <div class="nav2"><button id="inv-prev" aria-label="前の月">‹</button><button id="inv-next" aria-label="次の月">›</button></div>
+          <div class="mlabel" id="inv-label"></div>
+          <div class="legend"><span>数字＝空き棟数</span><span><i style="background:#e3ece2"></i>空きあり</span><span><i style="background:#f4ddd0"></i>× 満室</span></div>
         </div>
+        <div class="invcal-wrap"><table class="invcal" id="inv-table"></table></div>
       </div>
-      <div class="avail" id="inv-result"></div>
     </section>
 
     <!-- ===== 顧客 ===== -->
@@ -368,24 +380,31 @@ $("#csv").addEventListener("click",()=>{
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="reservations_"+iso(today())+".csv"; a.click(); URL.revokeObjectURL(a.href);
 });
 
-/* ---------- 空室確認 ---------- */
-function renderInv(){
-  const ciVal=$("#inv-ci").value; if(!ciVal){$("#inv-result").innerHTML="";return;}
-  const ci=parse(ciVal), nights=+$("#inv-nights").value;
-  const wrap=$("#inv-result"); wrap.innerHTML="";
+/* ---------- 空室確認（棟×日付カレンダー） ---------- */
+let invM=new Date(today().getFullYear(),today().getMonth(),1);
+function renderInvCal(){
+  $("#inv-label").textContent=invM.getFullYear()+"年 "+(invM.getMonth()+1)+"月";
+  const y=invM.getFullYear(), m=invM.getMonth();
+  const days=new Date(y,m+1,0).getDate();
+  let head="<thead><tr><th class='corner'>棟</th>";
+  for(let d=1;d<=days;d++){const w=new Date(y,m,d).getDay();head+=`<th class='${w===0?"sun":w===6?"wend":""}'>${d}</th>`;}
+  head+="</tr></thead>";
+  let body="<tbody>";
   S.villas.forEach(v=>{
-    const free=AONE.freeUnits(v.key,ci,nights);
-    const card=document.createElement("div");
-    card.className="acard "+(free>0?"free":"full");
-    card.innerHTML=`<div class="vn">${v.name}</div>
-      <div class="meta">${yen(v.price)} / 泊・全${v.units}棟</div>
-      <div class="st">${free>0?"○ 空室あり（残 "+free+" / "+v.units+"）":"× 満室"}</div>`;
-    wrap.appendChild(card);
+    body+=`<tr><td class='villa'>${v.name}<br><span>全${v.units}棟</span></td>`;
+    for(let d=1;d<=days;d++){
+      const date=new Date(y,m,d);
+      const free=AONE.freeUnits(v.key,date,1);
+      const tcls=iso(date)===iso(today())?" today2":"";
+      body+=`<td class='cell2 ${free>0?"free":"full"}${tcls}'>${free>0?free:"×"}</td>`;
+    }
+    body+="</tr>";
   });
+  body+="</tbody>";
+  $("#inv-table").innerHTML=head+body;
 }
-$("#inv-check").addEventListener("click",renderInv);
-$("#inv-ci").addEventListener("change",renderInv);
-$("#inv-nights").addEventListener("change",renderInv);
+$("#inv-prev").addEventListener("click",()=>{invM.setMonth(invM.getMonth()-1);renderInvCal();});
+$("#inv-next").addEventListener("click",()=>{invM.setMonth(invM.getMonth()+1);renderInvCal();});
 
 /* ---------- 顧客 ---------- */
 function renderCust(){
@@ -440,7 +459,7 @@ function showSection(sec){
   ["resv","inv","cust","set"].forEach(s=>$("#sec-"+s).hidden=(s!==sec));
   $$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.sec===sec));
   $("#sec-title").textContent=TITLES[sec];
-  if(sec==="inv") renderInv();
+  if(sec==="inv") renderInvCal();
   if(sec==="cust") renderCust();
   if(sec==="set") renderSet();
 }
@@ -465,7 +484,6 @@ function refreshAll(){ $("#brand").firstChild.textContent=S.facility.split(" ")[
 
 /* init */
 $("#today").textContent="本日 "+iso(today());
-$("#inv-ci").min=iso(today()); $("#inv-ci").value=iso(today());
 buildVillaFilter(); refreshKpis(); renderList();
 if(location.hash==="#cal"){ $('#viewseg button[data-v="cal"]').click(); }
 if(location.hash==="#inv") showSection("inv");

@@ -4,49 +4,38 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AONE GLAMPING VILLA｜予約管理</title>
-<meta name="description" content="予約管理画面（ポートフォリオ用デモ・架空施設・閲覧専用）。" />
+<meta name="description" content="予約管理画面（ポートフォリオ用デモ・架空施設）。予約一覧/カレンダー/空室確認/顧客/設定。" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#EFEEE6; --card:#F8F7F1;
-    --forest:#20302A; --forest-2:#2C4034;
-    --sage:#7C8A77; --ember:#BC5A2C;
-    --line:#D7D3C6;
-    --r:4px; --r-lg:10px;
-    --disp:"Shippori Mincho",serif;
-    --body:"Zen Kaku Gothic New",sans-serif;
-    --mono:"Space Mono",monospace;
+    --paper:#EFEEE6; --card:#F8F7F1; --forest:#20302A; --forest-2:#2C4034;
+    --sage:#7C8A77; --ember:#BC5A2C; --line:#D7D3C6; --r:4px; --r-lg:10px;
+    --disp:"Shippori Mincho",serif; --body:"Zen Kaku Gothic New",sans-serif; --mono:"Space Mono",monospace;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--paper);color:var(--forest);font-family:var(--body);font-size:14px;
-    line-height:1.7;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--paper);color:var(--forest);font-family:var(--body);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  [hidden]{display:none!important}
   .app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
-
-  /* sidebar */
   .side{background:var(--forest);color:var(--paper);padding:26px 20px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
-  .side .logo{font-family:var(--disp);font-weight:600;font-size:18px;letter-spacing:.02em}
+  .side .logo{font-family:var(--disp);font-weight:600;font-size:18px}
   .side .logo small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#8aa091;margin-top:4px}
   .nav{margin-top:34px;display:flex;flex-direction:column;gap:2px}
-  .nav a{display:flex;align-items:center;gap:11px;color:#c4cfc5;text-decoration:none;font-size:13.5px;
-    padding:10px 12px;border-radius:var(--r);transition:background .15s,color .15s}
-  .nav a:hover{background:var(--forest-2);color:var(--paper)}
-  .nav a.on{background:var(--forest-2);color:var(--paper)}
-  .nav a .dot{width:6px;height:6px;border-radius:50%;background:var(--ember);opacity:0;transition:.15s}
-  .nav a.on .dot{opacity:1}
+  .nav button{display:flex;align-items:center;gap:11px;color:#c4cfc5;background:none;border:none;cursor:pointer;
+    font-family:var(--body);font-size:13.5px;text-align:left;padding:10px 12px;border-radius:var(--r);transition:.15s}
+  .nav button:hover{background:var(--forest-2);color:var(--paper)}
+  .nav button.on{background:var(--forest-2);color:var(--paper)}
+  .nav button .dot{width:6px;height:6px;border-radius:50%;background:var(--ember);opacity:0}
+  .nav button.on .dot{opacity:1}
   .side .foot{margin-top:auto;font-family:var(--mono);font-size:10.5px;color:#6f8478;letter-spacing:.06em}
   .side .foot a{color:#8aa091}
-
-  /* main */
-  main{padding:30px 34px 60px;max-width:1180px}
-  .demo-banner{background:#f0e2d6;border:1px solid #e0c4ad;color:#8a4a26;font-size:12.5px;
-    border-radius:var(--r);padding:9px 14px;margin-bottom:22px;font-family:var(--body)}
+  main{padding:30px 34px 70px;max-width:1180px}
+  .demo-banner{background:#f0e2d6;border:1px solid #e0c4ad;color:#8a4a26;font-size:12.5px;border-radius:var(--r);padding:9px 14px;margin-bottom:22px}
   .head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px}
   .head h1{font-family:var(--disp);font-weight:600;font-size:24px;margin:0}
   .head .date{font-family:var(--mono);font-size:12px;color:var(--sage)}
 
-  /* KPI */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px}
   .kpi .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage)}
@@ -54,77 +43,86 @@
   .kpi .v small{font-size:13px;color:var(--sage);font-weight:400;margin-left:3px}
   .kpi.accent .v{color:var(--ember)}
 
-  /* toolbar */
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-  .toolbar input,.toolbar select{background:#fff;border:1px solid var(--line);border-radius:var(--r);
-    padding:9px 12px;font-family:var(--body);font-size:13.5px;color:var(--forest)}
+  .toolbar input,.toolbar select{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;font-family:var(--body);font-size:13.5px;color:var(--forest)}
   .toolbar input{min-width:200px}
   .toolbar input:focus,.toolbar select:focus{outline:none;border-color:var(--forest)}
   .toolbar .spacer{margin-left:auto}
-  .btn{appearance:none;border:1px solid var(--line);background:#fff;cursor:pointer;font-family:var(--body);
-    font-size:13px;font-weight:700;color:var(--forest);border-radius:var(--r);padding:9px 15px;transition:.15s}
+  .btn{appearance:none;border:1px solid var(--line);background:#fff;cursor:pointer;font-family:var(--body);font-size:13px;font-weight:700;color:var(--forest);border-radius:var(--r);padding:9px 15px;transition:.15s}
   .btn:hover{border-color:var(--forest)}
   .btn.primary{background:var(--forest);color:var(--paper);border-color:var(--forest)}
   .btn.primary:hover{filter:brightness(1.12)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
+  .seg button{appearance:none;border:none;background:none;cursor:pointer;font-family:var(--body);font-size:13px;font-weight:700;color:var(--sage);padding:9px 16px;transition:.15s}
+  .seg button.on{background:var(--forest);color:var(--paper)}
 
-  /* table */
   .tablewrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
   table{width:100%;border-collapse:collapse;font-size:13.5px}
-  thead th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--sage);font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
   tbody td{padding:13px 16px;border-bottom:1px solid #e6e3d8}
   tbody tr{cursor:pointer;transition:background .12s}
   tbody tr:hover{background:#edf0ea}
   tbody tr:last-child td{border-bottom:none}
   td.num{font-family:var(--mono)}
   .villa-tag{font-size:12px;color:var(--forest)}
-  .badge{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;
-    padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .badge{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
   .badge.todo{background:#f4e0d3;color:#a84e23}
   .badge.ok{background:#dde7dd;color:#2f4a37}
   .badge.cancel{background:#e8e6dc;color:#8d8a7c;text-decoration:line-through}
   .empty{padding:40px;text-align:center;color:var(--sage);font-size:13px}
 
-  /* view toggle */
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
-  .seg button{appearance:none;border:none;background:none;cursor:pointer;font-family:var(--body);
-    font-size:13px;font-weight:700;color:var(--sage);padding:9px 16px;transition:.15s}
-  .seg button.on{background:var(--forest);color:var(--paper)}
-
   /* calendar */
   .cal{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px}
   .cal-bar{display:flex;align-items:center;gap:14px;margin-bottom:14px}
   .cal-bar .mlabel{font-family:var(--disp);font-size:19px;font-weight:600;min-width:150px}
-  .cal-bar .nav{display:flex;gap:6px}
-  .cal-bar .nav button{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:var(--r);
-    cursor:pointer;font-size:15px;color:var(--forest);transition:.15s}
-  .cal-bar .nav button:hover{border-color:var(--forest)}
+  .cal-bar .nav2{display:flex;gap:6px}
+  .cal-bar .nav2 button{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:var(--r);cursor:pointer;font-size:15px;color:var(--forest)}
+  .cal-bar .nav2 button:hover{border-color:var(--forest)}
   .cal-bar .legend{margin-left:auto;display:flex;gap:14px;font-family:var(--mono);font-size:10.5px;color:var(--sage);flex-wrap:wrap}
-  .cal-bar .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:0}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);
-    border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-  .cal-dow{background:var(--card);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
-    color:var(--sage);text-align:center;padding:8px 0;font-weight:700}
+  .cal-bar .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .cal-dow{background:var(--card);font-family:var(--mono);font-size:10.5px;color:var(--sage);text-align:center;padding:8px 0;font-weight:700}
   .cal-dow.sun{color:#b5563f}.cal-dow.sat{color:#3f6f8f}
   .cell{background:#fff;min-height:108px;padding:6px 6px 8px;display:flex;flex-direction:column;gap:3px}
   .cell.out{background:#f3f2ec}
-  .cell .d{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--forest)}
+  .cell .d{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11.5px}
   .cell .occ{font-size:9.5px;color:var(--sage)}
   .cell.full .occ{color:var(--ember);font-weight:700}
-  .cell.today .d{color:var(--ember);font-weight:700}
-  .cell.today{box-shadow:inset 0 0 0 2px var(--ember)}
-  .chip{font-size:10.5px;line-height:1.45;padding:2px 6px;border-radius:3px;cursor:pointer;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid}
+  .cell.today .d{color:var(--ember);font-weight:700}.cell.today{box-shadow:inset 0 0 0 2px var(--ember)}
+  .chip{font-size:10.5px;line-height:1.45;padding:2px 6px;border-radius:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid}
   .chip.todo{background:#f6e7da;border-color:#c4622f;color:#7c4422}
   .chip.ok{background:#e1eae0;border-color:#3f8f64;color:#2f4a37}
   .chip.more{font-family:var(--mono);font-size:9.5px;color:var(--sage);cursor:default;border:none;padding-left:6px}
 
+  /* inventory / availability */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;margin-bottom:18px}
+  .panel h3{font-family:var(--disp);font-weight:600;font-size:17px;margin:0 0 16px}
+  .inv-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+  .inv-form .fld{display:flex;flex-direction:column;gap:6px}
+  .inv-form label{font-size:12px;font-weight:700;color:var(--sage)}
+  .inv-form input,.inv-form select{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;font-family:var(--body);font-size:14px;color:var(--forest)}
+  .avail{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:4px}
+  .acard{border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;background:#fff}
+  .acard .vn{font-family:var(--disp);font-weight:600;font-size:16px}
+  .acard .st{margin-top:10px;font-family:var(--mono);font-size:13px;font-weight:700}
+  .acard.free{border-left:4px solid #3f8f64}.acard.free .st{color:#2f4a37}
+  .acard.full{border-left:4px solid var(--ember)}.acard.full .st{color:var(--ember)}
+  .acard .meta{font-size:11.5px;color:var(--sage);margin-top:3px}
+
+  /* settings */
+  .set-facility{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
+  .set-grid{display:grid;grid-template-columns:1.4fr .8fr .6fr 2fr;gap:10px 14px;align-items:center;margin-top:8px}
+  .set-grid .hd{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage)}
+  .set-grid input{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:9px 11px;font-family:var(--body);font-size:13.5px;color:var(--forest);width:100%}
+  .set-grid input:focus{outline:none;border-color:var(--forest)}
+  .set-actions{margin-top:20px;display:flex;gap:10px;align-items:center}
+  .set-note{font-size:12px;color:var(--sage)}
+  .saved{color:#2f7a4a;font-weight:700;font-size:13px;opacity:0;transition:opacity .2s}
+  .saved.show{opacity:1}
+
   /* drawer */
-  .scrim{position:fixed;inset:0;background:rgba(20,28,24,.45);display:none;z-index:40}
-  .scrim.open{display:block}
-  .drawer{position:fixed;top:0;right:-460px;width:440px;max-width:92vw;height:100vh;background:var(--paper);
-    box-shadow:-16px 0 50px rgba(0,0,0,.25);transition:right .26s cubic-bezier(.4,0,.2,1);z-index:50;
-    display:flex;flex-direction:column}
+  .scrim{position:fixed;inset:0;background:rgba(20,28,24,.45);display:none;z-index:40}.scrim.open{display:block}
+  .drawer{position:fixed;top:0;right:-460px;width:440px;max-width:92vw;height:100vh;background:var(--paper);box-shadow:-16px 0 50px rgba(0,0,0,.25);transition:right .26s cubic-bezier(.4,0,.2,1);z-index:50;display:flex;flex-direction:column}
   .drawer.open{right:0}
   .drawer .dh{background:var(--forest);color:var(--paper);padding:22px 24px}
   .drawer .dh .cid{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#8aa091}
@@ -134,11 +132,9 @@
   .drawer dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--sage);padding-top:2px}
   .drawer dd{margin:0;font-weight:500}
   .drawer dd.total{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--ember)}
-  .drawer .seclab{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--sage);margin:24px 0 12px}
+  .drawer .seclab{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin:24px 0 12px}
   .statusrow{display:flex;gap:8px}
-  .statusrow button{flex:1;border:1px solid var(--line);background:#fff;border-radius:var(--r);padding:10px;
-    cursor:pointer;font-family:var(--body);font-size:12.5px;font-weight:700;color:var(--forest);transition:.15s}
+  .statusrow button{flex:1;border:1px solid var(--line);background:#fff;border-radius:var(--r);padding:10px;cursor:pointer;font-family:var(--body);font-size:12.5px;font-weight:700;color:var(--forest)}
   .statusrow button:hover{border-color:var(--forest)}
   .statusrow button.sel{background:var(--forest);color:var(--paper);border-color:var(--forest)}
   .drawer .dfoot{padding:16px 24px;border-top:1px solid var(--line);font-size:12px;color:var(--sage)}
@@ -146,9 +142,9 @@
 
   @media(max-width:880px){
     .app{grid-template-columns:1fr}
-    .side{position:static;height:auto;flex-direction:row;align-items:center;gap:18px;padding:14px 18px}
+    .side{position:static;height:auto;flex-direction:row;align-items:center;gap:14px;padding:14px 18px;overflow-x:auto}
     .side .logo small,.side .foot{display:none}.nav{flex-direction:row;margin:0 0 0 auto}
-    .kpis{grid-template-columns:1fr 1fr}
+    .kpis{grid-template-columns:1fr 1fr}.set-grid{grid-template-columns:1fr 1fr}
     thead th:nth-child(4),tbody td:nth-child(4){display:none}
   }
   :focus-visible{outline:2px solid var(--ember);outline-offset:2px}
@@ -156,284 +152,325 @@
 </head>
 <body>
 <div class="app">
-  <!-- sidebar -->
   <aside class="side">
-    <div class="logo">AONE<small>GLAMPING ADMIN</small></div>
-    <nav class="nav">
-      <a class="on" href="#"><span class="dot"></span>予約管理</a>
-      <a href="#"><span class="dot"></span>棟・在庫</a>
-      <a href="#"><span class="dot"></span>顧客</a>
-      <a href="#"><span class="dot"></span>売上レポート</a>
-      <a href="#"><span class="dot"></span>設定</a>
+    <div class="logo" id="brand">AONE<small>GLAMPING ADMIN</small></div>
+    <nav class="nav" id="nav">
+      <button class="on" data-sec="resv"><span class="dot"></span>予約管理</button>
+      <button data-sec="inv"><span class="dot"></span>空室確認</button>
+      <button data-sec="cust"><span class="dot"></span>顧客</button>
+      <button data-sec="set"><span class="dot"></span>設定</button>
     </nav>
     <div class="foot">PORTFOLIO DEMO<br><a href="index.html">← 予約フォーム（お客様側）</a></div>
   </aside>
 
-  <!-- main -->
   <main>
-    <div class="demo-banner">📌 ポートフォリオ用デモ（架空施設・閲覧専用）。データはダミーで、変更は保存されません。</div>
+    <div class="demo-banner">📌 ポートフォリオ用デモ（架空施設）。データはブラウザ内(localStorage)に保存され、フォーム・設定と共有されます。</div>
+    <div class="head"><h1 id="sec-title">予約管理</h1><span class="date" id="today"></span></div>
 
-    <div class="head">
-      <h1>予約管理</h1>
-      <span class="date" id="today"></span>
-    </div>
-
-    <!-- KPI -->
-    <section class="kpis">
-      <div class="kpi accent"><div class="l">本日チェックイン</div><div class="v" id="k-in">0<small>件</small></div></div>
-      <div class="kpi"><div class="l">本日チェックアウト</div><div class="v" id="k-out">0<small>件</small></div></div>
-      <div class="kpi"><div class="l">今週の予約</div><div class="v" id="k-week">0<small>件</small></div></div>
-      <div class="kpi"><div class="l">本日の稼働</div><div class="v" id="k-occ">0<small>/5棟</small></div></div>
-    </section>
-
-    <!-- toolbar -->
-    <div class="toolbar">
-      <div class="seg" id="viewseg">
-        <button data-v="list" class="on">一覧</button>
-        <button data-v="cal">カレンダー</button>
+    <!-- ===== 予約管理 ===== -->
+    <section id="sec-resv">
+      <div class="kpis">
+        <div class="kpi accent"><div class="l">本日チェックイン</div><div class="v" id="k-in">0<small>件</small></div></div>
+        <div class="kpi"><div class="l">本日チェックアウト</div><div class="v" id="k-out">0<small>件</small></div></div>
+        <div class="kpi"><div class="l">今週の予約</div><div class="v" id="k-week">0<small>件</small></div></div>
+        <div class="kpi"><div class="l">本日の稼働</div><div class="v" id="k-occ">0<small>/5棟</small></div></div>
       </div>
-      <input type="search" id="q" placeholder="名前・予約番号で検索" />
-      <select id="f-villa"><option value="">すべての棟</option><option>フォレストドーム</option><option>リバーサイドキャビン</option><option>プレミアムサウナヴィラ</option></select>
-      <select id="f-status"><option value="">すべての状態</option><option value="todo">未対応</option><option value="ok">確認済</option><option value="cancel">キャンセル</option></select>
-      <span class="spacer"></span>
-      <button class="btn" id="csv">CSV出力</button>
-    </div>
-
-    <!-- calendar view -->
-    <section id="calview" style="display:none">
-      <div class="cal">
-        <div class="cal-bar">
-          <div class="nav"><button id="cal-prev" aria-label="前の月">‹</button><button id="cal-next" aria-label="次の月">›</button></div>
-          <div class="mlabel" id="cal-label"></div>
-          <div class="legend">
-            <span><i style="background:#c4622f"></i>未対応</span>
-            <span><i style="background:#3f8f64"></i>確認済</span>
-            <span>セル右上＝稼働 / 全5棟</span>
+      <div class="toolbar">
+        <div class="seg" id="viewseg"><button data-v="list" class="on">一覧</button><button data-v="cal">カレンダー</button></div>
+        <input type="search" id="q" placeholder="名前・予約番号で検索" />
+        <select id="f-villa"></select>
+        <select id="f-status"><option value="">すべての状態</option><option value="todo">未対応</option><option value="ok">確認済</option><option value="cancel">キャンセル</option></select>
+        <span class="spacer"></span>
+        <button class="btn" id="csv">CSV出力</button>
+      </div>
+      <section id="calview" hidden>
+        <div class="cal">
+          <div class="cal-bar">
+            <div class="nav2"><button id="cal-prev" aria-label="前の月">‹</button><button id="cal-next" aria-label="次の月">›</button></div>
+            <div class="mlabel" id="cal-label"></div>
+            <div class="legend"><span><i style="background:#c4622f"></i>未対応</span><span><i style="background:#3f8f64"></i>確認済</span><span>セル右上＝稼働/全棟</span></div>
           </div>
+          <div class="cal-grid" id="cal-grid"></div>
         </div>
-        <div class="cal-grid" id="cal-grid"></div>
+      </section>
+      <div class="tablewrap" id="listwrap">
+        <table><thead><tr><th>予約番号</th><th>お名前</th><th>棟</th><th>チェックイン</th><th>泊</th><th>人数</th><th>金額</th><th>状態</th></tr></thead><tbody id="rows"></tbody></table>
+        <div class="empty" id="empty" hidden>該当する予約はありません。</div>
       </div>
     </section>
 
-    <!-- table -->
-    <div class="tablewrap">
-      <table>
-        <thead><tr>
-          <th>予約番号</th><th>お名前</th><th>棟</th><th>チェックイン</th><th>泊</th><th>人数</th><th>金額</th><th>状態</th>
-        </tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
-      <div class="empty" id="empty" style="display:none">該当する予約はありません。</div>
-    </div>
+    <!-- ===== 空室確認 ===== -->
+    <section id="sec-inv" hidden>
+      <div class="panel">
+        <h3>空室を確認する</h3>
+        <div class="inv-form">
+          <div class="fld"><label for="inv-ci">チェックイン</label><input type="date" id="inv-ci"></div>
+          <div class="fld"><label for="inv-nights">泊数</label><select id="inv-nights"><option value="1">1泊</option><option value="2">2泊</option><option value="3">3泊</option></select></div>
+          <button class="btn primary" id="inv-check">空室を確認</button>
+        </div>
+      </div>
+      <div class="avail" id="inv-result"></div>
+    </section>
+
+    <!-- ===== 顧客 ===== -->
+    <section id="sec-cust" hidden>
+      <div class="tablewrap">
+        <table><thead><tr><th>お名前</th><th>メール</th><th>電話</th><th>来訪回数</th><th>累計金額</th><th>最終利用</th></tr></thead><tbody id="cust-rows"></tbody></table>
+        <div class="empty" id="cust-empty" hidden>顧客データがありません。</div>
+      </div>
+    </section>
+
+    <!-- ===== 設定 ===== -->
+    <section id="sec-set" hidden>
+      <div class="panel">
+        <h3>施設情報</h3>
+        <div class="set-facility">
+          <div class="fld" style="flex:1;min-width:240px"><label class="set-note" for="set-facility">施設名</label>
+          <input type="text" id="set-facility" style="width:100%;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;font-family:var(--body);font-size:14px;color:var(--forest)"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>棟と料金</h3>
+        <p class="set-note">料金・在庫数は保存すると、予約フォームの計算・空室確認・本日の稼働に即反映されます。</p>
+        <div class="set-grid" id="set-villas">
+          <div class="hd">棟名</div><div class="hd">料金/泊</div><div class="hd">在庫数</div><div class="hd">説明</div>
+        </div>
+        <div class="set-actions">
+          <button class="btn primary" id="set-save">保存する</button>
+          <button class="btn" id="set-reset">初期値に戻す</button>
+          <span class="saved" id="set-saved">✓ 保存しました</span>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
 <!-- drawer -->
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true">
-  <div class="dh">
-    <div style="display:flex;align-items:flex-start">
-      <div><div class="cid" id="d-id"></div><div class="nm" id="d-name"></div></div>
-      <button class="x" id="d-close" aria-label="閉じる">×</button>
-    </div>
-  </div>
+  <div class="dh"><div style="display:flex;align-items:flex-start"><div><div class="cid" id="d-id"></div><div class="nm" id="d-name"></div></div><button class="x" id="d-close" aria-label="閉じる">×</button></div></div>
   <div class="db">
     <dl>
-      <dt>棟</dt><dd id="d-villa"></dd>
-      <dt>日程</dt><dd id="d-dates"></dd>
-      <dt>人数</dt><dd id="d-guests"></dd>
-      <dt>オプション</dt><dd id="d-opts"></dd>
-      <dt>電話</dt><dd id="d-tel"></dd>
-      <dt>メール</dt><dd id="d-email"></dd>
-      <dt>金額</dt><dd class="total" id="d-total"></dd>
+      <dt>棟</dt><dd id="d-villa"></dd><dt>日程</dt><dd id="d-dates"></dd><dt>人数</dt><dd id="d-guests"></dd>
+      <dt>オプション</dt><dd id="d-opts"></dd><dt>電話</dt><dd id="d-tel"></dd><dt>メール</dt><dd id="d-email"></dd><dt>金額</dt><dd class="total" id="d-total"></dd>
     </dl>
     <div class="seclab">対応状況を変更</div>
-    <div class="statusrow" id="d-status">
-      <button data-s="todo">未対応</button>
-      <button data-s="ok">確認済</button>
-      <button data-s="cancel">キャンセル</button>
-    </div>
+    <div class="statusrow" id="d-status"><button data-s="todo">未対応</button><button data-s="ok">確認済</button><button data-s="cancel">キャンセル</button></div>
   </div>
-  <div class="dfoot">※デモのため、状態変更は画面上のみ反映され保存されません。</div>
+  <div class="dfoot">状態変更は localStorage に保存され、一覧・カレンダー・稼働に反映されます。</div>
 </aside>
 
+<script src="store.js"></script>
 <script>
-const yen = n => "¥" + n.toLocaleString("ja-JP");
-const $ = s => document.querySelector(s);
-const pad = n => String(n).padStart(2,"0");
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const {iso,parse,addDays,today,yen}=AONE;
+AONE.seedIfEmpty();
+let S=AONE.getSettings();
+const vname=k=>{const v=AONE.villa(k,S);return v?v.name:k;};
+const vabbr=k=>({dome:"ドーム",cabin:"キャビン",sauna:"サウナ"})[k]||vname(k);
+const STATUS={todo:"未対応",ok:"確認済",cancel:"キャンセル"};
 
-// --- build dummy data relative to today so KPIs always make sense ---
-const today = new Date(); today.setHours(0,0,0,0);
-const iso = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
-const addDays = (base,n)=>{const d=new Date(base);d.setDate(d.getDate()+n);return d;};
-const VILLAS = {"フォレストドーム":24000,"リバーサイドキャビン":38000,"プレミアムサウナヴィラ":52000};
-const NAMES = ["田中 陽子","佐藤 健","鈴木 美咲","高橋 大輔","渡辺 さくら","伊藤 涼","山本 翔","中村 ひかり","小林 拓海","加藤 萌","吉田 隼人","松本 結衣"];
-const OPTS = [["夕食BBQセット"],["朝食ボックス","貸切サウナ60分"],[],["ペット同伴"],["夕食BBQセット","朝食ボックス"],["貸切サウナ60分"]];
-const STATUS = {todo:"未対応",ok:"確認済",cancel:"キャンセル"};
+function reloadSettings(){ S=AONE.getSettings(); }
 
-// offsets in days from today for checkin (mix of past/today/future)
-const offs = [0,0,1,2,-1,3,5,1,7,-2,4,2];
-const nightsArr=[1,2,1,1,2,1,3,2,1,1,2,1];
-const statArr=["todo","ok","todo","ok","ok","todo","ok","cancel","todo","ok","todo","ok"];
-const villaKeys = Object.keys(VILLAS);
-
-const data = NAMES.map((nm,i)=>{
-  const villa = villaKeys[i%3];
-  const nights = nightsArr[i];
-  const ci = addDays(today, offs[i]);
-  const adults = 1+(i%3), children = i%2;
-  const opts = OPTS[i%OPTS.length];
-  let total = VILLAS[villa]*nights;
-  const OPT_PRICE={"夕食BBQセット":3500,"朝食ボックス":1500,"貸切サウナ60分":6000,"ペット同伴":4000};
-  const PER_GUEST=new Set(["夕食BBQセット","朝食ボックス"]);
-  opts.forEach(o=> total += PER_GUEST.has(o)? OPT_PRICE[o]*(adults+children)*nights : OPT_PRICE[o]*nights);
-  return {
-    id:"AO-"+(1043+i),
-    name:nm, villa, ci, nights,
-    co: addDays(ci,nights),
-    adults, children, opts,
-    tel:"090"+(10000000+i*734291).toString().slice(0,8),
-    email:nm.split(" ")[0].toLowerCase().replace(/[^a-z]/g,"")+i+"@example.com",
-    total, status:statArr[i]
-  };
-});
-
-// KPIs
+/* ---------- 予約管理: KPI ---------- */
 function refreshKpis(){
-  const inToday = data.filter(r=>r.status!=="cancel" && iso(r.ci)===iso(today)).length;
-  const outToday = data.filter(r=>r.status!=="cancel" && iso(r.co)===iso(today)).length;
-  const weekEnd = addDays(today,7);
-  const week = data.filter(r=>r.status!=="cancel" && r.ci>=today && r.ci<weekEnd).length;
-  // 稼働 = 本日宿泊中の棟数（ci<=today<co）
-  const occ = data.filter(r=>r.status!=="cancel" && r.ci<=today && today<r.co).length;
-  $("#k-in").innerHTML = inToday+"<small>件</small>";
-  $("#k-out").innerHTML = outToday+"<small>件</small>";
-  $("#k-week").innerHTML = week+"<small>件</small>";
-  $("#k-occ").innerHTML = occ+"<small>/5棟</small>";
+  const t=today(), res=AONE.getReservations().filter(r=>r.status!=="cancel");
+  const inT=res.filter(r=>r.ci===iso(t)).length;
+  const outT=res.filter(r=>iso(addDays(parse(r.ci),r.nights))===iso(t)).length;
+  const wEnd=addDays(t,7);
+  const wk=res.filter(r=>{const c=parse(r.ci);return c>=t&&c<wEnd;}).length;
+  const occ=res.filter(r=>{const c=parse(r.ci);return c<=t&&t<addDays(c,r.nights);}).length;
+  const tot=AONE.totalUnits(S);
+  $("#k-in").innerHTML=inT+"<small>件</small>";
+  $("#k-out").innerHTML=outT+"<small>件</small>";
+  $("#k-week").innerHTML=wk+"<small>件</small>";
+  $("#k-occ").innerHTML=occ+"<small>/"+tot+"棟</small>";
 }
 
-// render table
-function render(){
-  const q=$("#q").value.trim().toLowerCase(), fv=$("#f-villa").value, fs=$("#f-status").value;
-  const list = data
-    .filter(r=> !q || r.name.toLowerCase().includes(q) || r.id.toLowerCase().includes(q))
-    .filter(r=> !fv || r.villa===fv)
-    .filter(r=> !fs || r.status===fs)
-    .sort((a,b)=> a.ci-b.ci);
-  const tb=$("#rows"); tb.innerHTML="";
+/* ---------- 一覧 ---------- */
+function filtered(){
+  const q=$("#q").value.trim().toLowerCase(),fv=$("#f-villa").value,fs=$("#f-status").value;
+  return AONE.getReservations()
+    .filter(r=>!q||r.name.toLowerCase().includes(q)||r.id.toLowerCase().includes(q))
+    .filter(r=>!fv||r.villaKey===fv)
+    .filter(r=>!fs||r.status===fs)
+    .sort((a,b)=>parse(a.ci)-parse(b.ci));
+}
+function renderList(){
+  const list=filtered(), tb=$("#rows"); tb.innerHTML="";
   list.forEach(r=>{
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td class="num">${r.id}</td><td>${r.name}</td>
-      <td class="villa-tag">${r.villa}</td><td class="num">${iso(r.ci)}</td>
-      <td class="num">${r.nights}</td><td class="num">${r.adults+r.children}</td>
-      <td class="num">${yen(r.total)}</td>
-      <td><span class="badge ${r.status}">${STATUS[r.status]}</span></td>`;
+    tr.innerHTML=`<td class="num">${r.id}</td><td>${r.name}</td><td class="villa-tag">${vname(r.villaKey)}</td>
+      <td class="num">${r.ci}</td><td class="num">${r.nights}</td><td class="num">${r.adults+r.children}</td>
+      <td class="num">${yen(r.total)}</td><td><span class="badge ${r.status}">${STATUS[r.status]}</span></td>`;
     tr.addEventListener("click",()=>openDrawer(r));
     tb.appendChild(tr);
   });
-  $("#empty").style.display = list.length? "none":"block";
+  $("#empty").hidden=list.length>0;
 }
 
-// drawer
+/* ---------- カレンダー ---------- */
+const DOW=["日","月","火","水","木","金","土"];
+let calM=new Date(today().getFullYear(),today().getMonth(),1);
+function renderCal(){
+  $("#cal-label").textContent=calM.getFullYear()+"年 "+(calM.getMonth()+1)+"月";
+  const grid=$("#cal-grid"); grid.innerHTML="";
+  DOW.forEach((d,i)=>{const h=document.createElement("div");h.className="cal-dow"+(i===0?" sun":i===6?" sat":"");h.textContent=d;grid.appendChild(h);});
+  const start=new Date(calM); start.setDate(1-calM.getDay());
+  const tot=AONE.totalUnits(S);
+  const list=filtered().filter(r=>r.status!=="cancel");
+  for(let i=0;i<42;i++){
+    const d=addDays(start,i), cell=document.createElement("div");
+    cell.className="cell"+(d.getMonth()!==calM.getMonth()?" out":"");
+    if(iso(d)===iso(today())) cell.classList.add("today");
+    const stays=list.filter(r=>{const c=parse(r.ci);return c<=d&&d<addDays(c,r.nights);});
+    if(stays.length>=tot) cell.classList.add("full");
+    const h=document.createElement("div"); h.className="d";
+    h.innerHTML=`<span>${d.getDate()}</span><span class="occ">${stays.length}/${tot}</span>`;
+    cell.appendChild(h);
+    stays.slice(0,3).forEach(r=>{const c=document.createElement("div");c.className="chip "+r.status;
+      c.textContent=vabbr(r.villaKey)+"・"+r.name.split(" ")[0];c.title=r.name+"／"+vname(r.villaKey);
+      c.addEventListener("click",()=>openDrawer(r));cell.appendChild(c);});
+    if(stays.length>3){const m=document.createElement("div");m.className="chip more";m.textContent="+"+(stays.length-3)+"件";cell.appendChild(m);}
+    grid.appendChild(cell);
+  }
+}
+
+/* ---------- drawer ---------- */
 let current=null;
 function openDrawer(r){
   current=r;
-  $("#d-id").textContent=r.id;
-  $("#d-name").textContent=r.name+" 様";
-  $("#d-villa").textContent=r.villa;
-  $("#d-dates").textContent=iso(r.ci)+" 〜 "+iso(r.co)+"（"+r.nights+"泊）";
+  $("#d-id").textContent=r.id; $("#d-name").textContent=r.name+" 様";
+  $("#d-villa").textContent=vname(r.villaKey);
+  $("#d-dates").textContent=r.ci+" 〜 "+iso(addDays(parse(r.ci),r.nights))+"（"+r.nights+"泊）";
   $("#d-guests").textContent="大人 "+r.adults+" / 子供 "+r.children;
-  $("#d-opts").textContent=r.opts.length? r.opts.join("、"):"なし";
-  $("#d-tel").textContent=r.tel;
-  $("#d-email").textContent=r.email;
-  $("#d-total").textContent=yen(r.total);
-  document.querySelectorAll("#d-status button").forEach(b=>b.classList.toggle("sel",b.dataset.s===r.status));
+  const oNames=(r.opts||[]).map(k=>{const o=S.options.find(x=>x.key===k);return o?o.name:k;});
+  $("#d-opts").textContent=oNames.length?oNames.join("、"):"なし";
+  $("#d-tel").textContent=r.tel; $("#d-email").textContent=r.email; $("#d-total").textContent=yen(r.total);
+  $$("#d-status button").forEach(b=>b.classList.toggle("sel",b.dataset.s===r.status));
   $("#drawer").classList.add("open"); $("#scrim").classList.add("open");
 }
 function closeDrawer(){ $("#drawer").classList.remove("open"); $("#scrim").classList.remove("open"); }
 $("#d-close").addEventListener("click",closeDrawer);
 $("#scrim").addEventListener("click",closeDrawer);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
-document.querySelectorAll("#d-status button").forEach(b=>b.addEventListener("click",()=>{
-  if(!current)return;
-  current.status=b.dataset.s;
-  document.querySelectorAll("#d-status button").forEach(x=>x.classList.toggle("sel",x===b));
-  render(); refreshKpis(); renderCal();
+$$("#d-status button").forEach(b=>b.addEventListener("click",()=>{
+  if(!current)return; AONE.setStatus(current.id,b.dataset.s); current.status=b.dataset.s;
+  $$("#d-status button").forEach(x=>x.classList.toggle("sel",x===b));
+  renderList(); renderCal(); refreshKpis();
 }));
 
-// CSV export
+/* ---------- CSV ---------- */
 $("#csv").addEventListener("click",()=>{
   const head=["予約番号","お名前","棟","チェックイン","泊数","人数","金額","状態"];
-  const lines=[head.join(",")].concat(data.map(r=>[
-    r.id,r.name,r.villa,iso(r.ci),r.nights,r.adults+r.children,r.total,STATUS[r.status]
-  ].join(",")));
+  const lines=[head.join(",")].concat(AONE.getReservations().map(r=>[r.id,r.name,vname(r.villaKey),r.ci,r.nights,r.adults+r.children,r.total,STATUS[r.status]].join(",")));
   const blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob); a.download="reservations_"+iso(today)+".csv"; a.click();
-  URL.revokeObjectURL(a.href);
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="reservations_"+iso(today())+".csv"; a.click(); URL.revokeObjectURL(a.href);
 });
 
-// filters
-["q","f-villa","f-status"].forEach(id=>$("#"+id).addEventListener("input",()=>{render();renderCal();}));
+/* ---------- 空室確認 ---------- */
+function renderInv(){
+  const ciVal=$("#inv-ci").value; if(!ciVal){$("#inv-result").innerHTML="";return;}
+  const ci=parse(ciVal), nights=+$("#inv-nights").value;
+  const wrap=$("#inv-result"); wrap.innerHTML="";
+  S.villas.forEach(v=>{
+    const free=AONE.freeUnits(v.key,ci,nights);
+    const card=document.createElement("div");
+    card.className="acard "+(free>0?"free":"full");
+    card.innerHTML=`<div class="vn">${v.name}</div>
+      <div class="meta">${yen(v.price)} / 泊・全${v.units}棟</div>
+      <div class="st">${free>0?"○ 空室あり（残 "+free+" / "+v.units+"）":"× 満室"}</div>`;
+    wrap.appendChild(card);
+  });
+}
+$("#inv-check").addEventListener("click",renderInv);
+$("#inv-ci").addEventListener("change",renderInv);
+$("#inv-nights").addEventListener("change",renderInv);
 
-// --- view toggle ---
+/* ---------- 顧客 ---------- */
+function renderCust(){
+  const map={};
+  AONE.getReservations().filter(r=>r.status!=="cancel").forEach(r=>{
+    const k=r.email||r.name;
+    if(!map[k]) map[k]={name:r.name,email:r.email,tel:r.tel,visits:0,total:0,last:r.ci};
+    const m=map[k]; m.visits++; m.total+=r.total; if(parse(r.ci)>parse(m.last)) m.last=r.ci;
+  });
+  const rows=Object.values(map).sort((a,b)=>b.total-a.total);
+  const tb=$("#cust-rows"); tb.innerHTML="";
+  rows.forEach(m=>{const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${m.name}</td><td class="num" style="font-size:12px">${m.email}</td><td class="num">${m.tel}</td>
+      <td class="num">${m.visits}回</td><td class="num">${yen(m.total)}</td><td class="num">${m.last}</td>`;
+    tb.appendChild(tr);});
+  $("#cust-empty").hidden=rows.length>0;
+}
+
+/* ---------- 設定 ---------- */
+function renderSet(){
+  $("#set-facility").value=S.facility;
+  const grid=$("#set-villas");
+  grid.querySelectorAll(".vrow").forEach(e=>e.remove());
+  S.villas.forEach((v,i)=>{
+    const frag=document.createElement("div"); // wrapper not used; append 4 inputs directly
+    const mk=(val,cls,type)=>{const inp=document.createElement("input");inp.className="vrow";inp.dataset.i=i;inp.dataset.f=cls;inp.value=val;if(type)inp.type=type;return inp;};
+    grid.appendChild(mk(v.name,"name"));
+    grid.appendChild(mk(v.price,"price","number"));
+    grid.appendChild(mk(v.units,"units","number"));
+    grid.appendChild(mk(v.desc,"desc"));
+  });
+}
+$("#set-save").addEventListener("click",()=>{
+  const s=AONE.getSettings();
+  s.facility=$("#set-facility").value.trim()||s.facility;
+  $$("#set-villas .vrow").forEach(inp=>{
+    const v=s.villas[+inp.dataset.i], f=inp.dataset.f;
+    if(f==="price"||f==="units") v[f]=Math.max(0,parseInt(inp.value,10)||0); else v[f]=inp.value;
+  });
+  AONE.saveSettings(s); reloadSettings();
+  buildVillaFilter(); refreshAll();
+  const tag=$("#set-saved"); tag.classList.add("show"); setTimeout(()=>tag.classList.remove("show"),1600);
+});
+$("#set-reset").addEventListener("click",()=>{
+  if(!confirm("設定を初期値に戻しますか？")) return;
+  AONE.resetSettings(); reloadSettings(); buildVillaFilter(); renderSet(); refreshAll();
+});
+
+/* ---------- nav / 共通 ---------- */
+const TITLES={resv:"予約管理",inv:"空室確認",cust:"顧客",set:"設定"};
+function showSection(sec){
+  ["resv","inv","cust","set"].forEach(s=>$("#sec-"+s).hidden=(s!==sec));
+  $$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.sec===sec));
+  $("#sec-title").textContent=TITLES[sec];
+  if(sec==="inv") renderInv();
+  if(sec==="cust") renderCust();
+  if(sec==="set") renderSet();
+}
+$$("#nav button").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.sec)));
+
 let view="list";
-document.querySelectorAll("#viewseg button").forEach(b=>b.addEventListener("click",()=>{
-  view=b.dataset.v;
-  document.querySelectorAll("#viewseg button").forEach(x=>x.classList.toggle("on",x===b));
-  $(".tablewrap").style.display = view==="list"?"":"none";
-  $("#calview").style.display = view==="cal"?"":"none";
+$$("#viewseg button").forEach(b=>b.addEventListener("click",()=>{
+  view=b.dataset.v; $$("#viewseg button").forEach(x=>x.classList.toggle("on",x===b));
+  $("#listwrap").hidden=view!=="list"; $("#calview").hidden=view!=="cal";
   if(view==="cal") renderCal();
 }));
-
-// --- calendar ---
-const VABBR={"フォレストドーム":"ドーム","リバーサイドキャビン":"キャビン","プレミアムサウナヴィラ":"サウナ"};
-const DOW=["日","月","火","水","木","金","土"];
-let calM=new Date(today.getFullYear(),today.getMonth(),1);
-
-function filtered(){
-  const q=$("#q").value.trim().toLowerCase(),fv=$("#f-villa").value,fs=$("#f-status").value;
-  return data
-    .filter(r=> !q || r.name.toLowerCase().includes(q) || r.id.toLowerCase().includes(q))
-    .filter(r=> !fv || r.villa===fv)
-    .filter(r=> !fs || r.status===fs);
-}
-function renderCal(){
-  $("#cal-label").textContent = calM.getFullYear()+"年 "+(calM.getMonth()+1)+"月";
-  const grid=$("#cal-grid"); grid.innerHTML="";
-  DOW.forEach((d,i)=>{const h=document.createElement("div");h.className="cal-dow"+(i===0?" sun":i===6?" sat":"");h.textContent=d;grid.appendChild(h);});
-  const first=new Date(calM), start=new Date(calM); start.setDate(1-first.getDay());
-  const list=filtered().filter(r=>r.status!=="cancel"); // 宿泊実体のみ
-  for(let i=0;i<42;i++){
-    const d=addDays(start,i);
-    const cell=document.createElement("div");
-    const out=d.getMonth()!==calM.getMonth();
-    cell.className="cell"+(out?" out":"");
-    if(iso(d)===iso(today)) cell.classList.add("today");
-    // その夜に宿泊している予約（ci <= d < co）
-    const stays=list.filter(r=> r.ci<=d && d<r.co);
-    if(stays.length>=5) cell.classList.add("full");
-    const head=document.createElement("div"); head.className="d";
-    head.innerHTML=`<span>${d.getDate()}</span><span class="occ">${stays.length}/5</span>`;
-    cell.appendChild(head);
-    stays.slice(0,3).forEach(r=>{
-      const c=document.createElement("div");
-      c.className="chip "+r.status;
-      c.textContent=VABBR[r.villa]+"・"+r.name.split(" ")[0];
-      c.title=r.name+" 様／"+r.villa+"（"+iso(r.ci)+"〜"+iso(r.co)+"）";
-      c.addEventListener("click",()=>openDrawer(r));
-      cell.appendChild(c);
-    });
-    if(stays.length>3){const m=document.createElement("div");m.className="chip more";m.textContent="+"+(stays.length-3)+"件";cell.appendChild(m);}
-    grid.appendChild(cell);
-  }
-}
 $("#cal-prev").addEventListener("click",()=>{calM.setMonth(calM.getMonth()-1);renderCal();});
 $("#cal-next").addEventListener("click",()=>{calM.setMonth(calM.getMonth()+1);renderCal();});
+["q","f-villa","f-status"].forEach(id=>$("#"+id).addEventListener("input",()=>{renderList();renderCal();}));
 
-$("#today").textContent="本日 "+iso(today);
-refreshKpis(); render();
-if(location.hash==="#cal"){ document.querySelector('#viewseg button[data-v="cal"]').click(); }
+function buildVillaFilter(){
+  const sel=$("#f-villa"); const cur=sel.value;
+  sel.innerHTML='<option value="">すべての棟</option>'+S.villas.map(v=>`<option value="${v.key}">${v.name}</option>`).join("");
+  sel.value=cur;
+}
+function refreshAll(){ $("#brand").firstChild.textContent=S.facility.split(" ")[0]||"AONE"; refreshKpis(); renderList(); renderCal(); }
+
+/* init */
+$("#today").textContent="本日 "+iso(today());
+$("#inv-ci").min=iso(today()); $("#inv-ci").value=iso(today());
+buildVillaFilter(); refreshKpis(); renderList();
+if(location.hash==="#cal"){ $('#viewseg button[data-v="cal"]').click(); }
+if(location.hash==="#inv") showSection("inv");
+if(location.hash==="#set") showSection("set");
+if(location.hash==="#cust") showSection("cust");
 </script>
 </body>
 </html>

@@ -182,21 +182,21 @@
   <section class="sec">
     <div class="sec-head"><span class="sec-no">01</span><h2>棟を選ぶ</h2><span class="sub">1棟 / 1泊</span></div>
     <div class="plans" id="plans">
-      <label class="plan" data-price="24000">
+      <label class="plan" data-price="24000" data-key="dome">
         <input type="radio" name="plan" value="フォレストドーム" />
         <span class="tick"></span>
         <span class="pname">フォレストドーム</span>
         <span class="pprice">¥24,000<small>/ 泊</small></span>
         <span class="pdesc">ドームテント／焚き火台・ウッドデッキ付き／最大4名</span>
       </label>
-      <label class="plan" data-price="38000">
+      <label class="plan" data-price="38000" data-key="cabin">
         <input type="radio" name="plan" value="リバーサイドキャビン" />
         <span class="tick"></span>
         <span class="pname">リバーサイドキャビン</span>
         <span class="pprice">¥38,000<small>/ 泊</small></span>
         <span class="pdesc">木造キャビン／屋根付きテラス・沢沿い／最大4名</span>
       </label>
-      <label class="plan" data-price="52000">
+      <label class="plan" data-price="52000" data-key="sauna">
         <input type="radio" name="plan" value="プレミアムサウナヴィラ" />
         <span class="tick"></span>
         <span class="pname">プレミアムサウナヴィラ</span>
@@ -205,6 +205,7 @@
       </label>
     </div>
     <div id="err-plan">棟を選択してください。</div>
+    <div id="avail-note" style="margin-top:12px;font-size:13px;display:none"></div>
   </section>
 
   <!-- 2 schedule -->
@@ -238,10 +239,10 @@
   <section class="sec">
     <div class="sec-head"><span class="sec-no">03</span><h2>オプション</h2><span class="sub">任意</span></div>
     <div class="opts" id="opts">
-      <label class="opt"><input type="checkbox" data-price="3500" data-per="guest" value="夕食BBQセット" /> 夕食BBQセット <span class="oprice">3,500 ×人</span></label>
-      <label class="opt"><input type="checkbox" data-price="1500" data-per="guest" value="朝食ボックス" /> 朝食ボックス <span class="oprice">1,500 ×人</span></label>
-      <label class="opt"><input type="checkbox" data-price="6000" data-per="room" value="貸切サウナ60分" /> 貸切サウナ60分 <span class="oprice">6,000</span></label>
-      <label class="opt"><input type="checkbox" data-price="4000" data-per="room" value="ペット同伴" /> ペット同伴 <span class="oprice">4,000</span></label>
+      <label class="opt"><input type="checkbox" data-price="3500" data-per="guest" data-key="bbq" value="夕食BBQセット" /> 夕食BBQセット <span class="oprice">3,500 ×人</span></label>
+      <label class="opt"><input type="checkbox" data-price="1500" data-per="guest" data-key="breakfast" value="朝食ボックス" /> 朝食ボックス <span class="oprice">1,500 ×人</span></label>
+      <label class="opt"><input type="checkbox" data-price="6000" data-per="room" data-key="sauna60" value="貸切サウナ60分" /> 貸切サウナ60分 <span class="oprice">6,000</span></label>
+      <label class="opt"><input type="checkbox" data-price="4000" data-per="room" data-key="pet" value="ペット同伴" /> ペット同伴 <span class="oprice">4,000</span></label>
     </div>
   </section>
 
@@ -317,10 +318,36 @@
   </div>
 </div>
 
+<script src="store.js"></script>
 <script>
 const yen = n => "¥" + n.toLocaleString("ja-JP");
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
+
+// 共通ストア初期化＋設定反映（設定画面の料金・棟名がここに反映される）
+AONE.seedIfEmpty();
+(function applySettings(){
+  const S = AONE.getSettings();
+  // 施設名（ヒーローのeyebrow）
+  const eb = document.querySelector(".hero .eyebrow"); if(eb) eb.textContent = S.facility;
+  document.title = S.facility + "｜ご予約";
+  // 棟カード（名前・料金・説明・dataset）
+  $$(".plan").forEach(p=>{
+    const v = AONE.villa(p.dataset.key, S); if(!v) return;
+    p.dataset.price = v.price;
+    p.querySelector("input").value = v.name;
+    p.querySelector(".pname").textContent = v.name;
+    p.querySelector(".pprice").innerHTML = "¥"+Number(v.price).toLocaleString("ja-JP")+"<small>/ 泊</small>";
+    p.querySelector(".pdesc").textContent = v.desc;
+  });
+  // オプション価格
+  $$(".opt input").forEach(o=>{
+    const op = S.options.find(x=>x.key===o.dataset.key); if(!op) return;
+    o.dataset.price = op.price;
+    const span = o.closest(".opt").querySelector(".oprice");
+    span.textContent = op.per==="guest" ? op.price.toLocaleString("ja-JP")+" ×人" : op.price.toLocaleString("ja-JP");
+  });
+})();
 
 $$(".plan input").forEach(r => r.addEventListener("change", () => {
   $$(".plan").forEach(p => p.classList.toggle("sel", p.contains(r) && r.checked));
@@ -369,6 +396,23 @@ function validate(){
 
 $("#checkin").min = new Date().toISOString().split("T")[0];
 
+// 空室チェック（設定の在庫数＋既存予約から判定）
+function selKey(){ const s=$(".plan input:checked"); return s? s.closest(".plan").dataset.key : null; }
+function checkAvail(){
+  const key=selKey(), ci=$("#checkin").value, nights=+$("#nights").value||1;
+  const note=$("#avail-note");
+  if(!key || !ci){ note.style.display="none"; return null; }
+  const free=AONE.freeUnits(key, AONE.parse(ci), nights);
+  note.style.display="block";
+  if(free>0){ note.style.color="#2f7a4a"; note.textContent="○ ご希望の日程で空室があります（残 "+free+" 棟）"; }
+  else { note.style.color="#BC5A2C"; note.textContent="× ご希望の日程は満室です。日程または棟を変更してください。"; }
+  return free;
+}
+$$(".plan input").forEach(r=>r.addEventListener("change",checkAvail));
+$("#checkin").addEventListener("change",checkAvail);
+$("#nights").addEventListener("change",checkAvail);
+
+let pending=null;
 $("#resv").addEventListener("submit", e => {
   e.preventDefault();
   if (!validate()){
@@ -376,7 +420,17 @@ $("#resv").addEventListener("submit", e => {
     if (bad) bad.scrollIntoView({behavior:"smooth",block:"center"});
     return;
   }
+  if (checkAvail()===0){ $("#avail-note").scrollIntoView({behavior:"smooth",block:"center"}); return; }
   const sel = $(".plan input:checked");
+  const planEl = sel.closest(".plan");
+  pending = {
+    id: AONE.nextId(), name: $("#name").value, villaKey: planEl.dataset.key,
+    ci: $("#checkin").value, nights: +$("#nights").value,
+    adults: +$("#adults").value, children: +$("#children").value,
+    opts: $$(".opt input:checked").map(o=>o.dataset.key),
+    tel: $("#tel").value, email: $("#email").value,
+    total: parseInt($("#sum-total").textContent.replace(/[^\d]/g,""),10)||0, status: "todo"
+  };
   const opts = $$(".opt input:checked").map(o=>o.value);
   const rows = [
     ["棟", sel.value],
@@ -395,7 +449,9 @@ $("#resv").addEventListener("submit", e => {
 
 $("#back").addEventListener("click", () => $("#modal").classList.remove("open"));
 $("#confirm").addEventListener("click", () => {
-  // 実案件ではここで fetch('/api/reserve', {method:'POST', body:...}) → メール/スプレッドシート/Supabase
+  // 実案件ではここで fetch('/api/reserve', ...) → メール/スプレッドシート/Supabase
+  // デモ: 共通ストア(localStorage)に予約を保存 → 管理画面に反映される
+  if (pending) { AONE.addReservation(pending); pending = null; }
   $("#modal-review").style.display="none";
   $("#modal-done").style.display="block";
 });

@@ -117,7 +117,15 @@
   .invcal th.corner,.invcal td.villa{position:sticky;left:0;background:var(--card);text-align:left;padding:9px 14px;font-family:var(--body);font-weight:700;white-space:nowrap;border-right:1px solid var(--line);z-index:1}
   .invcal th.corner{z-index:2}
   .invcal td.villa span{font-weight:400;color:var(--sage);font-size:10px}
-  .invcal td.cell2{font-family:var(--mono);height:36px;min-width:30px}
+  .invcal td.cell2{font-family:var(--mono);height:36px;min-width:30px;cursor:pointer}
+  .invpop{position:fixed;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:0 16px 44px rgba(0,0,0,.28);padding:14px 16px;min-width:220px;max-width:290px;z-index:60;display:none;font-size:13px}
+  .invpop.open{display:block}
+  .invpop h4{font-family:var(--disp);font-size:14px;margin:0 0 6px;font-weight:600}
+  .invpop h4 span{font-weight:400;color:var(--sage);font-size:11px;font-family:var(--mono)}
+  .invpop .g{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line);cursor:pointer}
+  .invpop .g:hover{color:var(--ember)}
+  .invpop .g .gid{font-family:var(--mono);font-size:11px;color:var(--sage)}
+  .invpop .none{color:var(--sage);padding-top:4px}
   .invcal td.free{background:#e3ece2;color:#2f4a37}
   .invcal td.full{background:#f4ddd0;color:#a84e23;font-weight:700}
   .invcal td.today2{box-shadow:inset 0 0 0 2px var(--ember)}
@@ -256,6 +264,9 @@
     </section>
   </main>
 </div>
+
+<!-- 空室セルの宿泊者ポップオーバー -->
+<div class="invpop" id="inv-pop"></div>
 
 <!-- drawer -->
 <div class="scrim" id="scrim"></div>
@@ -396,7 +407,7 @@ function renderInvCal(){
       const date=new Date(y,m,d);
       const free=AONE.freeUnits(v.key,date,1);
       const tcls=iso(date)===iso(today())?" today2":"";
-      body+=`<td class='cell2 ${free>0?"free":"full"}${tcls}'>${free>0?free:"×"}</td>`;
+      body+=`<td class='cell2 ${free>0?"free":"full"}${tcls}' data-k='${v.key}' data-d='${iso(date)}'>${free>0?free:"×"}</td>`;
     }
     body+="</tr>";
   });
@@ -405,6 +416,25 @@ function renderInvCal(){
 }
 $("#inv-prev").addEventListener("click",()=>{invM.setMonth(invM.getMonth()-1);renderInvCal();});
 $("#inv-next").addEventListener("click",()=>{invM.setMonth(invM.getMonth()+1);renderInvCal();});
+// セルクリック→その夜の宿泊者をポップオーバー表示
+function closePop(){ $("#inv-pop").classList.remove("open"); }
+$("#inv-table").addEventListener("click",e=>{
+  const td=e.target.closest("td.cell2"); if(!td)return;
+  const key=td.dataset.k, dIso=td.dataset.d, date=parse(dIso), v=AONE.villa(key,S);
+  const guests=AONE.getReservations().filter(r=>r.status!=="cancel"&&r.villaKey===key&&parse(r.ci)<=date&&date<addDays(parse(r.ci),r.nights));
+  const free=AONE.freeUnits(key,date,1);
+  let html=`<h4>${v.name}<br><span>${dIso}・空き ${free}/${v.units}</span></h4>`;
+  html+= guests.length
+    ? guests.map(r=>`<div class="g" data-id="${r.id}"><span>${r.name} 様</span><span class="gid">${r.id}</span></div>`).join("")
+    : `<div class="none">この日の宿泊予約はありません。</div>`;
+  const pop=$("#inv-pop"); pop.innerHTML=html;
+  const x=Math.min(e.clientX+8, window.innerWidth-300), y=Math.min(e.clientY+8, window.innerHeight-180);
+  pop.style.left=x+"px"; pop.style.top=Math.max(8,y)+"px"; pop.classList.add("open");
+  pop.querySelectorAll(".g").forEach(g=>g.addEventListener("click",()=>{
+    const r=AONE.getReservations().find(x=>x.id===g.dataset.id); closePop(); if(r) openDrawer(r);
+  }));
+});
+document.addEventListener("click",e=>{ if(!e.target.closest("#inv-pop")&&!e.target.closest("#inv-table")) closePop(); });
 
 /* ---------- 顧客 ---------- */
 function renderCust(){

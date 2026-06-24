@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AONE GLAMPING VILLA｜ご予約</title>
+<meta name="description" content="標高800mの森に佇む、5棟限定の一棟貸しグランピング。ご予約フォーム（ポートフォリオ用デモ・架空施設）。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Design System tokens ===== */
+  :root{
+    --paper:#EFEEE6; --card:#F8F7F1;
+    --forest:#20302A; --forest-2:#2C4034;
+    --sage:#7C8A77; --ember:#BC5A2C;
+    --line:#D7D3C6;
+    --r:4px; --r-lg:10px;
+    --disp:"Shippori Mincho",serif;
+    --body:"Zen Kaku Gothic New",sans-serif;
+    --mono:"Space Mono",monospace;
+    --s1:8px; --s2:16px; --s3:24px; --s4:40px; --s5:64px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--forest);font-family:var(--body);
+    font-size:15.5px;line-height:1.8;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 500px at 100% -5%,rgba(124,138,119,.10),transparent);}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sage)}
+
+  /* ===== Hero ===== */
+  .hero{position:relative;background:var(--forest);color:var(--paper);overflow:hidden}
+  .hero svg.contour{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+  .hero svg.contour path{fill:none;stroke:var(--forest-2);stroke-width:1.4}
+  .hero-inner{position:relative;max-width:760px;margin:0 auto;padding:88px 24px 72px}
+  .hero .eyebrow{color:#8aa091;display:flex;align-items:center;gap:14px}
+  .hero .eyebrow::before{content:"";width:34px;height:1px;background:#5a7263}
+  .hero h1{font-family:var(--disp);font-weight:600;font-size:clamp(30px,6vw,52px);
+    line-height:1.32;margin:.5em 0 .55em;letter-spacing:.02em}
+  .hero p{max-width:30em;color:#cdd6cd;margin:0;font-size:15.5px}
+  .hero .meta{margin-top:34px;display:flex;gap:28px;flex-wrap:wrap;font-family:var(--mono);
+    font-size:12px;color:#9fb0a2;letter-spacing:.06em}
+  .hero .meta b{color:var(--paper);font-weight:700}
+  .demo-tag{position:absolute;top:18px;right:18px;z-index:2;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.12em;color:#9fb0a2;border:1px solid #3c5044;border-radius:999px;padding:5px 12px}
+
+  /* ===== Form sections ===== */
+  form{padding:var(--s5) 0 120px}
+  .sec{margin-bottom:var(--s4)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:var(--s3);
+    padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .sec-no{font-family:var(--mono);font-size:12px;color:var(--ember);font-weight:700;letter-spacing:.05em}
+  .sec-head h2{font-family:var(--disp);font-weight:600;font-size:21px;margin:0;letter-spacing:.02em}
+  .sec-head .sub{margin-left:auto;font-size:12.5px;color:var(--sage)}
+
+  /* plans */
+  .plans{display:grid;grid-template-columns:1fr;gap:10px}
+  .plan{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px 18px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:18px 20px;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}
+  .plan:hover{transform:translateY(-2px);border-color:var(--sage)}
+  .plan input{position:absolute;opacity:0;pointer-events:none}
+  .plan .pname{grid-column:1;grid-row:1;font-family:var(--disp);font-weight:600;font-size:17px}
+  .plan .pdesc{grid-column:1;grid-row:2;font-size:13px;color:var(--sage);margin-top:3px;max-width:42ch}
+  .plan .pprice{grid-column:2;grid-row:1 / span 2;align-self:center;text-align:right;font-family:var(--mono);
+    font-weight:700;font-size:19px;color:var(--forest);white-space:nowrap}
+  .plan .pprice small{display:block;font-weight:400;font-size:11px;color:var(--sage);letter-spacing:.04em}
+  .plan .tick{position:absolute;top:16px;left:-1px;width:3px;height:0;background:var(--ember);
+    border-radius:2px;transition:height .2s}
+  .plan.sel{border-color:var(--forest);background:#edf0ea}
+  .plan.sel .tick{height:calc(100% - 32px)}
+  .plan.sel .pprice{color:var(--ember)}
+
+  /* fields */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+  .field{margin-bottom:var(--s2)}
+  .lab{display:block;font-size:12.5px;font-weight:700;letter-spacing:.04em;margin-bottom:8px}
+  .lab .req{font-family:var(--mono);color:var(--ember);font-size:10px;margin-left:8px;letter-spacing:.1em;vertical-align:1px}
+  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--forest);
+    border-radius:var(--r);padding:12px 14px;font-family:var(--body);font-size:15px;transition:border-color .15s,box-shadow .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--forest);box-shadow:0 0 0 3px rgba(32,48,42,.08)}
+  input::placeholder,textarea::placeholder{color:#b3b3a6}
+  textarea{resize:vertical;min-height:96px;line-height:1.7}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237C8A77' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center}
+
+  /* options */
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:13px 15px;cursor:pointer;background:var(--card);font-size:14px;transition:border-color .15s,background .15s}
+  .opt:hover{border-color:var(--sage)}
+  .opt.sel{border-color:var(--forest);background:#edf0ea}
+  .opt input{width:17px;height:17px;accent-color:var(--ember);flex:0 0 auto}
+  .opt .oprice{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--sage)}
+
+  /* errors */
+  .err{font-family:var(--body);color:var(--ember);font-size:12px;margin-top:7px;display:none}
+  .field.invalid input,.field.invalid select{border-color:var(--ember)}
+  .field.invalid .err{display:block}
+  #err-plan{display:none;color:var(--ember);font-size:12.5px;margin-top:12px}
+
+  /* summary — STAY CARD */
+  .summary{position:sticky;bottom:16px;margin-top:var(--s3)}
+  .staycard{position:relative;overflow:hidden;background:var(--forest);color:var(--paper);
+    border-radius:var(--r-lg);padding:22px 24px;box-shadow:0 12px 30px rgba(32,48,42,.22)}
+  .staycard svg{position:absolute;right:-40px;top:-30px;width:260px;height:200px;opacity:.22}
+  .staycard svg path{fill:none;stroke:#4a6354;stroke-width:1.2}
+  .staycard .stitle{position:relative;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:#8aa091;margin-bottom:12px}
+  .srow{position:relative;display:flex;justify-content:space-between;align-items:baseline;
+    font-size:13.5px;color:#c4cfc5;padding:3px 0;gap:16px}
+  .srow .v{font-family:var(--mono);font-size:13px;color:var(--paper)}
+  .srow.total{margin-top:12px;padding-top:14px;border-top:1px solid #3c5044;align-items:center}
+  .srow.total .l{font-family:var(--disp);font-size:16px;color:var(--paper)}
+  .srow.total .v{font-family:var(--mono);font-weight:700;font-size:26px;color:#e08a52}
+  .btn{position:relative;appearance:none;border:none;cursor:pointer;font-family:var(--body);font-weight:700;
+    font-size:15.5px;letter-spacing:.04em;border-radius:var(--r);padding:15px 20px;width:100%;margin-top:18px;
+    color:var(--paper);background:var(--ember);transition:filter .15s,transform .1s}
+  .staycard .btn{background:var(--paper);color:var(--forest)}
+  .btn:hover{filter:brightness(1.04)}.btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--forest);border:1px solid var(--line)}
+
+  footer{border-top:1px solid var(--line);background:var(--card)}
+  footer .wrap{padding:28px 24px 40px;color:var(--sage);font-size:12px}
+  footer .fmono{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--forest);margin-top:6px}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(20,28,24,.62);display:none;place-items:center;padding:22px;z-index:60}
+  .modal.open{display:grid}
+  .sheet{background:var(--paper);border-radius:var(--r-lg);max-width:520px;width:100%;
+    padding:30px 30px 32px;box-shadow:0 30px 70px rgba(0,0,0,.4);animation:pop .22s ease}
+  @keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+  .sheet h2{font-family:var(--disp);font-weight:600;font-size:22px;margin:0 0 18px}
+  .review{display:grid;grid-template-columns:auto 1fr;gap:10px 20px;font-size:14px}
+  .review dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--sage);padding-top:3px}
+  .review dd{margin:0;font-weight:500}
+  .done{text-align:center}
+  .done .seal{width:62px;height:62px;border-radius:50%;border:1.5px solid var(--ember);color:var(--ember);
+    display:grid;place-items:center;font-size:28px;margin:4px auto 16px}
+
+  @media(max-width:560px){
+    .opts{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+    .plan{grid-template-columns:1fr}
+    .plan .pname{grid-column:1;grid-row:1}.plan .pdesc{grid-column:1;grid-row:3}
+    .plan .pprice{grid-column:1;grid-row:2;text-align:left;margin-top:4px}
+    .hero-inner{padding:72px 24px 56px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+  :focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <span class="demo-tag">PORTFOLIO DEMO · 架空施設</span>
+  <svg class="contour" viewBox="0 0 760 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path d="M-20 70 C120 30 260 110 420 70 S700 20 800 80" />
+    <path d="M-20 130 C120 90 280 170 440 130 S700 80 800 140" />
+    <path d="M-20 195 C140 150 280 235 460 190 S700 150 800 205" />
+    <path d="M-20 260 C140 215 300 300 480 255 S700 215 800 270" />
+    <path d="M-20 320 C160 280 320 360 520 315 S720 285 800 330" />
+  </svg>
+  <div class="hero-inner">
+    <span class="eyebrow">AONE GLAMPING VILLA</span>
+    <h1>宿泊のご予約</h1>
+    <p>棟・日程・人数を選び、お客様情報をご入力ください。ご予約内容を確認のうえ受け付けます。</p>
+    <div class="meta">
+      <span>全 <b>5棟</b></span>
+      <span>定員 <b>最大4名</b> / 棟</span>
+      <span>IN <b>15:00</b> — OUT <b>11:00</b></span>
+    </div>
+  </div>
+</header>
+
+<form class="wrap" id="resv" novalidate>
+
+  <!-- 1 plan -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">01</span><h2>棟を選ぶ</h2><span class="sub">1棟 / 1泊</span></div>
+    <div class="plans" id="plans">
+      <label class="plan" data-price="24000">
+        <input type="radio" name="plan" value="フォレストドーム" />
+        <span class="tick"></span>
+        <span class="pname">フォレストドーム</span>
+        <span class="pprice">¥24,000<small>/ 泊</small></span>
+        <span class="pdesc">ドームテント／焚き火台・ウッドデッキ付き／最大4名</span>
+      </label>
+      <label class="plan" data-price="38000">
+        <input type="radio" name="plan" value="リバーサイドキャビン" />
+        <span class="tick"></span>
+        <span class="pname">リバーサイドキャビン</span>
+        <span class="pprice">¥38,000<small>/ 泊</small></span>
+        <span class="pdesc">木造キャビン／屋根付きテラス・沢沿い／最大4名</span>
+      </label>
+      <label class="plan" data-price="52000">
+        <input type="radio" name="plan" value="プレミアムサウナヴィラ" />
+        <span class="tick"></span>
+        <span class="pname">プレミアムサウナヴィラ</span>
+        <span class="pprice">¥52,000<small>/ 泊</small></span>
+        <span class="pdesc">専用バレルサウナ・水風呂付き／最大4名</span>
+      </label>
+    </div>
+    <div id="err-plan">棟を選択してください。</div>
+  </section>
+
+  <!-- 2 schedule -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">02</span><h2>日程と人数</h2></div>
+    <div class="grid2">
+      <div class="field" id="f-checkin">
+        <label class="lab" for="checkin">チェックイン<span class="req">必須</span></label>
+        <input type="date" name="checkin" id="checkin" />
+        <div class="err">本日以降の日付を選んでください。</div>
+      </div>
+      <div class="field">
+        <label class="lab" for="nights">泊数</label>
+        <select name="nights" id="nights"><option value="1">1泊</option><option value="2">2泊</option><option value="3">3泊</option></select>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label class="lab" for="adults">大人（13歳以上）</label>
+        <input type="number" name="adults" id="adults" min="1" max="4" value="2" />
+      </div>
+      <div class="field" id="f-children">
+        <label class="lab" for="children">お子様（12歳以下）</label>
+        <input type="number" name="children" id="children" min="0" max="3" value="0" />
+        <div class="err">大人とお子様の合計は4名様までです。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 options -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">03</span><h2>オプション</h2><span class="sub">任意</span></div>
+    <div class="opts" id="opts">
+      <label class="opt"><input type="checkbox" data-price="3500" data-per="guest" value="夕食BBQセット" /> 夕食BBQセット <span class="oprice">3,500 ×人</span></label>
+      <label class="opt"><input type="checkbox" data-price="1500" data-per="guest" value="朝食ボックス" /> 朝食ボックス <span class="oprice">1,500 ×人</span></label>
+      <label class="opt"><input type="checkbox" data-price="6000" data-per="room" value="貸切サウナ60分" /> 貸切サウナ60分 <span class="oprice">6,000</span></label>
+      <label class="opt"><input type="checkbox" data-price="4000" data-per="room" value="ペット同伴" /> ペット同伴 <span class="oprice">4,000</span></label>
+    </div>
+  </section>
+
+  <!-- 4 contact -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">04</span><h2>ご連絡先</h2></div>
+    <div class="grid2">
+      <div class="field" id="f-name">
+        <label class="lab" for="name">お名前<span class="req">必須</span></label>
+        <input type="text" name="name" id="name" placeholder="山田 太郎" autocomplete="name" />
+        <div class="err">お名前を入力してください。</div>
+      </div>
+      <div class="field" id="f-tel">
+        <label class="lab" for="tel">電話番号<span class="req">必須</span></label>
+        <input type="tel" name="tel" id="tel" placeholder="09012345678" autocomplete="tel" />
+        <div class="err">ハイフンなし10〜11桁で入力してください。</div>
+      </div>
+    </div>
+    <div class="field" id="f-email">
+      <label class="lab" for="email">メールアドレス<span class="req">必須</span></label>
+      <input type="email" name="email" id="email" placeholder="example@mail.com" autocomplete="email" />
+      <div class="err">正しいメールアドレスを入力してください。</div>
+    </div>
+    <div class="field">
+      <label class="lab" for="note">ご要望（任意）</label>
+      <textarea name="note" id="note" placeholder="到着予定時刻、アレルギー、記念日のご利用など"></textarea>
+    </div>
+  </section>
+
+  <!-- summary -->
+  <div class="summary">
+    <div class="staycard">
+      <svg viewBox="0 0 260 200" aria-hidden="true">
+        <path d="M0 40 C60 10 120 60 200 35 S320 10 360 45"/>
+        <path d="M0 85 C70 55 130 100 210 75 S320 55 360 90"/>
+        <path d="M0 130 C70 100 140 145 220 120 S330 100 360 135"/>
+        <path d="M0 175 C80 145 150 188 240 165 S340 150 360 180"/>
+      </svg>
+      <div class="stitle">Your Stay</div>
+      <div class="srow"><span class="l" id="sum-plan">棟が未選択です</span><span class="v" id="sum-plan-amt">¥0</span></div>
+      <div class="srow" id="sum-opts-wrap" style="display:none"><span class="l">オプション</span><span class="v" id="sum-opts-amt">¥0</span></div>
+      <div class="srow total"><span class="l">合計（税込）</span><span class="v" id="sum-total">¥0</span></div>
+      <button type="submit" class="btn">予約内容を確認する</button>
+    </div>
+  </div>
+</form>
+
+<footer>
+  <div class="wrap">
+    AONE GLAMPING VILLA（架空施設）— ポートフォリオ用デモ
+    <div class="fmono">Design system + build by rund / HTML · CSS · Vanilla JS — リアルタイム料金計算・入力検証・確認フロー</div>
+    <div style="margin-top:14px"><a href="admin.html" style="font-family:var(--mono);font-size:12px;color:var(--ember);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px">運用側の管理画面デモを見る →</a></div>
+  </div>
+</footer>
+
+<!-- confirm modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="sheet">
+    <div id="modal-review">
+      <h2 id="m-title">ご予約内容の確認</h2>
+      <dl class="review" id="review"></dl>
+      <div class="grid2" style="margin-top:24px">
+        <button class="btn ghost" id="back">修正する</button>
+        <button class="btn" id="confirm">この内容で予約する</button>
+      </div>
+    </div>
+    <div id="modal-done" class="done" style="display:none">
+      <div class="seal">✓</div>
+      <h2 style="text-align:center">ご予約を受け付けました</h2>
+      <p style="color:var(--sage);font-size:13.5px;margin-top:6px">確認メールをお送りしました。<br>※デモのため、実際の送信は行われません。</p>
+      <button class="btn" id="close" style="max-width:200px;margin:20px auto 0">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const yen = n => "¥" + n.toLocaleString("ja-JP");
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+$$(".plan input").forEach(r => r.addEventListener("change", () => {
+  $$(".plan").forEach(p => p.classList.toggle("sel", p.contains(r) && r.checked));
+  $("#err-plan").style.display = "none";
+  recalc();
+}));
+$$(".opt input").forEach(c => c.addEventListener("change", () => {
+  c.closest(".opt").classList.toggle("sel", c.checked);
+  recalc();
+}));
+["nights","adults","children"].forEach(id => $("#"+id).addEventListener("input", recalc));
+
+const guests = () => (+$("#adults").value||0) + (+$("#children").value||0);
+
+function recalc(){
+  const sel = $(".plan input:checked");
+  const nights = +$("#nights").value || 1;
+  let planAmt = 0, planName = "棟が未選択です";
+  if (sel){ planAmt = +sel.closest(".plan").dataset.price * nights; planName = sel.value + "（" + nights + "泊）"; }
+  let optAmt = 0;
+  $$(".opt input:checked").forEach(o => {
+    const base = +o.dataset.price;
+    optAmt += o.dataset.per === "guest" ? base * guests() * nights : base * nights;
+  });
+  $("#sum-plan").textContent = planName;
+  $("#sum-plan-amt").textContent = yen(planAmt);
+  $("#sum-opts-wrap").style.display = optAmt ? "flex" : "none";
+  $("#sum-opts-amt").textContent = yen(optAmt);
+  $("#sum-total").textContent = yen(planAmt + optAmt);
+}
+
+const setErr = (id, bad) => { $(id).classList.toggle("invalid", bad); return !bad; };
+function validate(){
+  let ok = true;
+  if (!$(".plan input:checked")){ $("#err-plan").style.display="block"; ok=false; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const ci = $("#checkin").value;
+  ok = setErr("#f-checkin", !ci || new Date(ci) < today) && ok;
+  const total = guests();
+  ok = setErr("#f-children", total < 1 || total > 4) && ok;
+  ok = setErr("#f-name", !$("#name").value.trim()) && ok;
+  ok = setErr("#f-tel", !/^0\d{9,10}$/.test($("#tel").value.replace(/[-\s]/g,""))) && ok;
+  ok = setErr("#f-email", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#email").value)) && ok;
+  return ok;
+}
+
+$("#checkin").min = new Date().toISOString().split("T")[0];
+
+$("#resv").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!validate()){
+    const bad = $(".invalid") || $("#err-plan");
+    if (bad) bad.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  const sel = $(".plan input:checked");
+  const opts = $$(".opt input:checked").map(o=>o.value);
+  const rows = [
+    ["棟", sel.value],
+    ["日程", $("#checkin").value + " から " + $("#nights").value + "泊"],
+    ["人数", "大人 " + $("#adults").value + " / 子供 " + $("#children").value],
+    ["オプション", opts.length ? opts.join("、") : "なし"],
+    ["お名前", $("#name").value],
+    ["電話", $("#tel").value],
+    ["メール", $("#email").value],
+    ["ご要望", $("#note").value || "なし"],
+    ["合計", $("#sum-total").textContent],
+  ];
+  $("#review").innerHTML = rows.map(([k,v])=>`<dt>${k}</dt><dd>${String(v).replace(/</g,"&lt;")}</dd>`).join("");
+  $("#modal").classList.add("open");
+});
+
+$("#back").addEventListener("click", () => $("#modal").classList.remove("open"));
+$("#confirm").addEventListener("click", () => {
+  // 実案件ではここで fetch('/api/reserve', {method:'POST', body:...}) → メール/スプレッドシート/Supabase
+  $("#modal-review").style.display="none";
+  $("#modal-done").style.display="block";
+});
+$("#close").addEventListener("click", () => location.reload());
+$("#modal").addEventListener("click", e => { if(e.target.id==="modal") $("#modal").classList.remove("open"); });
+document.addEventListener("keydown", e => { if(e.key==="Escape") $("#modal").classList.remove("open"); });
+
+recalc();
+</script>
+</body>
+</html>

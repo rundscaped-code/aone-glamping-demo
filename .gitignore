@@ -1,0 +1,9 @@
+# preview renders / build artifacts (not part of the site)
+preview.png
+preview2.png
+admin.png
+cal.png
+aone-demo.zip
+.vercel
+.DS_Store
+node_modules
